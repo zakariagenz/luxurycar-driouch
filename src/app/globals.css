@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 210 50% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 210 50% 10%;
+  --primary: 210 62% 16%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 30% 96%;
+  --secondary-foreground: 210 50% 16%;
+  --muted: 210 20% 96%;
+  --muted-foreground: 210 15% 40%;
+  --accent: 38 65% 48%;
+  --accent-foreground: 210 62% 12%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 210 25% 88%;
+  --input: 210 25% 88%;
+  --ring: 38 65% 48%;
+  --radius: 0.625rem;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-navy-900 antialiased;
+  font-family: var(--font-sans);
+}
+
+/* RTL readiness hook — toggle dir="rtl" on <html> for Arabic */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .hero-gradient {
+    background:
+      linear-gradient(
+        120deg,
+        rgba(10, 25, 41, 0.82) 0%,
+        rgba(16, 42, 67, 0.55) 45%,
+        rgba(10, 25, 41, 0.35) 100%
+      ),
+      linear-gradient(to top, rgba(10, 25, 41, 0.75), transparent 45%);
+  }
+}
