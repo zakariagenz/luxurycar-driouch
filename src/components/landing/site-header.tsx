@@ -8,6 +8,7 @@ import { BUSINESS_WHATSAPP } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/components/i18n/locale-provider";
 import type { AppLocale } from "@/lib/i18n/dictionaries";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 export function SiteHeader({ dark = false }: { dark?: boolean }) {
   const [open, setOpen] = useState(false);
@@ -20,16 +21,20 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
     { href: "/admin", label: t("navStaff") },
   ];
 
-  const textClass = dark ? "text-navy-900" : "text-white";
+  const textClass = dark
+    ? "text-navy-900 dark:text-navy-50"
+    : "text-white";
   const mutedClass = dark
-    ? "text-navy-700 hover:text-gold-700"
+    ? "text-navy-700 hover:text-gold-700 dark:text-navy-200 dark:hover:text-gold-300"
     : "text-white/85 hover:text-gold-300";
 
   const LangSwitch = ({ className }: { className?: string }) => (
     <div
       className={cn(
         "inline-flex overflow-hidden rounded-md border text-xs font-semibold",
-        dark ? "border-navy-200" : "border-white/25",
+        dark
+          ? "border-navy-200 dark:border-navy-600"
+          : "border-white/25",
         className
       )}
     >
@@ -43,7 +48,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
             locale === code
               ? "bg-gold-500 text-navy-950"
               : dark
-                ? "bg-white text-navy-600 hover:bg-navy-50"
+                ? "bg-white text-navy-600 hover:bg-navy-50 dark:bg-navy-900 dark:text-navy-200 dark:hover:bg-navy-800"
                 : "bg-transparent text-white/80 hover:bg-white/10"
           )}
         >
@@ -70,7 +75,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-4 md:flex lg:gap-6">
           {NAV.map((item) => (
             <Link
               key={item.href}
@@ -80,6 +85,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
               {item.label}
             </Link>
           ))}
+          <ThemeToggle variant={dark ? "onLight" : "onDark"} />
           <LangSwitch />
           <Button variant="gold" size="sm" asChild>
             <a
@@ -94,6 +100,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
         </nav>
 
         <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle variant={dark ? "onLight" : "onDark"} />
           <LangSwitch />
           <button
             type="button"

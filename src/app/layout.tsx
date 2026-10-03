@@ -3,6 +3,7 @@ import "./globals.css";
 import { BookingProvider } from "@/components/booking/booking-context";
 import { BookingModal } from "@/components/booking/booking-modal";
 import { LocaleProvider } from "@/components/i18n/locale-provider";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 
 export const metadata: Metadata = {
   title: "LuxuryCar Driouch | Premium Car Rental Morocco",
@@ -16,20 +17,37 @@ export const metadata: Metadata = {
   ],
 };
 
+const themeInitScript = `
+(function(){
+  try {
+    var saved = localStorage.getItem('lcd_theme');
+    var dark = saved === 'dark' || (saved !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (dark) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-screen font-sans">
-        <LocaleProvider>
-          <BookingProvider>
-            {children}
-            <BookingModal />
-          </BookingProvider>
-        </LocaleProvider>
+        <ThemeProvider>
+          <LocaleProvider>
+            <BookingProvider>
+              {children}
+              <BookingModal />
+            </BookingProvider>
+          </LocaleProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

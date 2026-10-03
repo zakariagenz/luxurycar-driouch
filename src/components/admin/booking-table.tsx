@@ -103,9 +103,9 @@ export function BookingTable({
         ))}
       </div>
 
-      <div className="overflow-x-auto border border-navy-100 bg-white">
+      <div className="overflow-x-auto border border-navy-100 bg-white dark:border-navy-800 dark:bg-navy-900">
         <table className="w-full min-w-[780px] text-left text-sm">
-          <thead className="border-b border-navy-100 bg-navy-50/80 text-xs uppercase tracking-wider text-navy-500">
+          <thead className="border-b border-navy-100 bg-navy-50/80 text-xs uppercase tracking-wider text-navy-500 dark:border-navy-800 dark:bg-navy-950/80 dark:text-navy-400">
             <tr>
               <th className="px-4 py-3 font-medium">{t("reference")}</th>
               <th className="px-4 py-3 font-medium">{t("client")}</th>

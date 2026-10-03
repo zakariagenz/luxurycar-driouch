@@ -42,11 +42,11 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
       className={
         compact
           ? "grid gap-3"
-          : "grid gap-3 rounded-2xl border border-white/15 bg-white/95 p-4 shadow-2xl backdrop-blur sm:p-5 md:grid-cols-2 lg:grid-cols-[1.2fr_1.2fr_1fr_1fr_auto]"
+          : "grid gap-3 rounded-2xl border border-white/15 bg-white/95 p-4 shadow-2xl backdrop-blur sm:p-5 md:grid-cols-2 lg:grid-cols-[1.2fr_1.2fr_1fr_1fr_auto] dark:border-navy-700 dark:bg-navy-900/95"
       }
     >
       <div className="space-y-1.5">
-        <Label className="text-navy-600">{t("pickupLocation")}</Label>
+        <Label className="text-navy-600 dark:text-navy-300">{t("pickupLocation")}</Label>
         <Select
           value={form.pickupLocationId}
           onValueChange={(v) =>
@@ -74,7 +74,7 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-navy-600">{t("dropoffLocation")}</Label>
+        <Label className="text-navy-600 dark:text-navy-300">{t("dropoffLocation")}</Label>
         <Select
           value={form.dropoffLocationId}
           onValueChange={(v) => setForm((f) => ({ ...f, dropoffLocationId: v }))}
@@ -93,7 +93,7 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-navy-600">{t("pickup")}</Label>
+        <Label className="text-navy-600 dark:text-navy-300">{t("pickup")}</Label>
         <div className="flex gap-2">
           <Input
             type="date"
@@ -116,7 +116,7 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-navy-600">{t("dropoff")}</Label>
+        <Label className="text-navy-600 dark:text-navy-300">{t("dropoff")}</Label>
         <div className="flex gap-2">
           <Input
             type="date"

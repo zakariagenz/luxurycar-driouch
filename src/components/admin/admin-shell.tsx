@@ -15,6 +15,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/components/i18n/locale-provider";
 import type { AppLocale } from "@/lib/i18n/dictionaries";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -76,15 +77,16 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen bg-navy-50/50">
+    <div className="min-h-screen bg-navy-50/50 dark:bg-navy-950">
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col bg-navy-950 text-white lg:flex">
         <div className="border-b border-white/10 px-5 py-5">
           <p className="font-display text-xl font-semibold">
             LuxuryCar <span className="text-gold-400">Admin</span>
           </p>
           <p className="mt-0.5 text-xs text-white/50">{t("staffDash")}</p>
-          <div className="mt-3">
+          <div className="mt-3 flex items-center gap-2">
             <LangSwitch />
+            <ThemeToggle variant="onDark" />
           </div>
         </div>
         <div className="flex-1 px-3 py-4">
@@ -101,14 +103,17 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      <div className="sticky top-0 z-20 flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 lg:hidden">
-        <p className="font-display text-lg font-semibold text-navy-900">Admin</p>
+      <div className="sticky top-0 z-20 flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 dark:border-navy-800 dark:bg-navy-900 lg:hidden">
+        <p className="font-display text-lg font-semibold text-navy-900 dark:text-navy-50">
+          Admin
+        </p>
         <div className="flex items-center gap-2">
+          <ThemeToggle variant="onLight" />
           <LangSwitch />
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="rounded-md p-2 text-navy-700"
+            className="rounded-md p-2 text-navy-700 dark:text-navy-100"
             aria-label={t("menu")}
           >
             {open ? <X /> : <Menu />}

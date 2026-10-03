@@ -25,6 +25,31 @@
   --radius: 0.625rem;
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-sans: "DM Sans", system-ui, sans-serif;
+  --surface: 0 0% 100%;
+  --surface-muted: 210 30% 97%;
+}
+
+.dark {
+  --background: 210 55% 7%;
+  --foreground: 210 30% 96%;
+  --card: 210 45% 10%;
+  --card-foreground: 210 30% 96%;
+  --primary: 38 65% 52%;
+  --primary-foreground: 210 62% 10%;
+  --secondary: 210 35% 14%;
+  --secondary-foreground: 210 25% 92%;
+  --muted: 210 30% 14%;
+  --muted-foreground: 210 15% 65%;
+  --accent: 38 65% 48%;
+  --accent-foreground: 210 62% 10%;
+  --destructive: 0 62% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 210 25% 22%;
+  --input: 210 25% 22%;
+  --ring: 38 65% 48%;
+  --surface: 210 45% 10%;
+  --surface-muted: 210 40% 12%;
+  color-scheme: dark;
 }
 
 * {
@@ -36,7 +61,7 @@ html {
 }
 
 body {
-  @apply bg-white text-navy-900 antialiased;
+  @apply bg-white text-navy-900 antialiased dark:bg-navy-950 dark:text-navy-50;
   font-family: var(--font-sans);
 }
 
@@ -58,5 +83,11 @@ body {
         rgba(10, 25, 41, 0.35) 100%
       ),
       linear-gradient(to top, rgba(10, 25, 41, 0.75), transparent 45%);
+  }
+  .surface {
+    @apply bg-white dark:bg-navy-900;
+  }
+  .surface-muted {
+    @apply bg-navy-50/40 dark:bg-navy-900/60;
   }
 }

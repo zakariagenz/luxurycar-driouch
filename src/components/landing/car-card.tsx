@@ -25,7 +25,7 @@ export function CarCard({ car, index = 0 }: { car: Car; index?: number }) {
   return (
     <article
       className={cn(
-        "group relative flex flex-col overflow-hidden border-b border-navy-100 pb-8 opacity-0 animate-fade-in-up"
+        "group relative flex flex-col overflow-hidden border-b border-navy-100 pb-8 opacity-0 animate-fade-in-up dark:border-navy-800"
       )}
       style={{ animationDelay: `${Math.min(index * 80, 400)}ms` }}
     >
@@ -65,24 +65,24 @@ export function CarCard({ car, index = 0 }: { car: Car; index?: number }) {
       <div className="flex flex-1 flex-col">
         <div className="mb-1 flex items-start justify-between gap-3">
           <div>
-            <h3 className="font-display text-2xl font-semibold text-navy-900">
+            <h3 className="font-display text-2xl font-semibold text-navy-900 dark:text-navy-50">
               {car.make} {car.model}
             </h3>
-            <p className="text-sm capitalize text-navy-500">
+            <p className="text-sm capitalize text-navy-500 dark:text-navy-400">
               {car.year} · {car.transmission} · {car.fuelType}
             </p>
           </div>
           <div className="text-right">
-            <p className="font-semibold text-navy-900">
+            <p className="font-semibold text-navy-900 dark:text-navy-50">
               {formatDualPrice(car.dailyRateMad)}
             </p>
             <p className="text-xs text-navy-400">{t("perDay")}</p>
           </div>
         </div>
 
-        <p className="mt-2 line-clamp-2 text-sm text-navy-600">{car.description}</p>
+        <p className="mt-2 line-clamp-2 text-sm text-navy-600 dark:text-navy-300">{car.description}</p>
 
-        <div className="mt-4 flex flex-wrap gap-3 text-xs text-navy-600">
+        <div className="mt-4 flex flex-wrap gap-3 text-xs text-navy-600 dark:text-navy-300">
           <span className="inline-flex items-center gap-1">
             <Users className="h-3.5 w-3.5 text-gold-600" /> {car.seats}{" "}
             {t("seats")}
@@ -103,7 +103,7 @@ export function CarCard({ car, index = 0 }: { car: Car; index?: number }) {
           {car.features.slice(0, 3).map((f) => (
             <span
               key={f}
-              className="rounded bg-navy-50 px-2 py-0.5 text-[11px] text-navy-600"
+              className="rounded bg-navy-50 px-2 py-0.5 text-[11px] text-navy-600 dark:bg-navy-800 dark:text-navy-200"
             >
               {f}
             </span>

@@ -38,15 +38,15 @@ export function MetricsWidget({ metrics }: { metrics: DashboardMetrics }) {
       {ITEMS.map((item) => (
         <div
           key={item.key}
-          className="border border-navy-100 bg-white p-4 shadow-sm"
+          className="border border-navy-100 bg-white p-4 shadow-sm dark:border-navy-800 dark:bg-navy-900"
         >
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium uppercase tracking-wider text-navy-500">
+            <p className="text-xs font-medium uppercase tracking-wider text-navy-500 dark:text-navy-400">
               {t(item.labelKey)}
             </p>
             <item.icon className="h-4 w-4 text-gold-600" />
           </div>
-          <p className="mt-2 font-sans text-3xl font-semibold tracking-tight text-navy-900 tabular-nums">
+          <p className="mt-2 font-sans text-3xl font-semibold tracking-tight text-navy-900 tabular-nums dark:text-navy-50">
             {item.format
               ? item.format(metrics[item.key])
               : metrics[item.key]}

@@ -37,21 +37,21 @@ export function FleetCatalog() {
   );
 
   return (
-    <section id="fleet" className="scroll-mt-20 bg-white py-20 sm:py-24">
+    <section id="fleet" className="scroll-mt-20 bg-white py-20 dark:bg-navy-950 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-600">
             {t("ourFleet")}
           </p>
-          <h2 className="mt-2 font-display text-4xl font-semibold text-navy-900 sm:text-5xl">
+          <h2 className="mt-2 font-display text-4xl font-semibold text-navy-900 dark:text-navy-50 sm:text-5xl">
             {t("chooseDrive")}
           </h2>
-          <p className="mt-3 text-navy-600">
+          <p className="mt-3 text-navy-600 dark:text-navy-300">
             {t("fleetIntro", { count: availableCount })}
           </p>
         </div>
 
-        <div className="mb-10 flex flex-col gap-4 border-y border-navy-100 py-4">
+        <div className="mb-10 flex flex-col gap-4 border-y border-navy-100 py-4 dark:border-navy-800">
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((c) => (
               <button
@@ -61,8 +61,8 @@ export function FleetCatalog() {
                 className={cn(
                   "px-4 py-2 text-sm font-medium transition",
                   category === c.value
-                    ? "bg-navy-900 text-white"
-                    : "bg-navy-50 text-navy-700 hover:bg-navy-100"
+                    ? "bg-navy-900 text-white dark:bg-gold-500 dark:text-navy-950"
+                    : "bg-navy-50 text-navy-700 hover:bg-navy-100 dark:bg-navy-900 dark:text-navy-200 dark:hover:bg-navy-800"
                 )}
               >
                 {c.label}
@@ -84,8 +84,8 @@ export function FleetCatalog() {
                 className={cn(
                   "border px-3 py-1.5 text-xs font-medium transition",
                   transmission === value
-                    ? "border-gold-500 bg-gold-50 text-gold-700"
-                    : "border-navy-200 text-navy-600 hover:border-navy-300"
+                    ? "border-gold-500 bg-gold-50 text-gold-700 dark:bg-gold-500/15 dark:text-gold-300"
+                    : "border-navy-200 text-navy-600 hover:border-navy-300 dark:border-navy-700 dark:text-navy-300"
                 )}
               >
                 {label}
@@ -106,8 +106,8 @@ export function FleetCatalog() {
                 className={cn(
                   "border px-3 py-1.5 text-xs font-medium transition",
                   fuelType === value
-                    ? "border-terracotta-400 bg-terracotta-50 text-terracotta-700"
-                    : "border-navy-200 text-navy-600 hover:border-navy-300"
+                    ? "border-terracotta-400 bg-terracotta-50 text-terracotta-700 dark:bg-terracotta-500/15 dark:text-terracotta-300"
+                    : "border-navy-200 text-navy-600 hover:border-navy-300 dark:border-navy-700 dark:text-navy-300"
                 )}
               >
                 {label}

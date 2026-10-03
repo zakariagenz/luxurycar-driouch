@@ -3,7 +3,7 @@ import { formatDualPrice } from "./currency";
 import { format } from "date-fns";
 
 /** Owner WhatsApp — replace with real business number (country code, no +) */
-export const BUSINESS_WHATSAPP = "212600000000";
+export const BUSINESS_WHATSAPP = "212703740880";
 
 interface WhatsAppBookingContext {
   booking: Booking;

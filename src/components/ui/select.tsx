@@ -16,7 +16,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-md border border-navy-200 bg-white px-3 py-2 text-sm text-navy-900 ring-offset-white placeholder:text-navy-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      "flex h-10 w-full items-center justify-between rounded-md border border-navy-200 bg-white px-3 py-2 text-sm text-navy-900 ring-offset-white placeholder:text-navy-400 focus:outline-none focus:ring-2 focus:ring-gold-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:border-navy-700 dark:bg-navy-950 dark:text-navy-50 dark:ring-offset-navy-950",
       className
     )}
     {...props}
@@ -72,7 +72,7 @@ const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-navy-100 bg-white text-navy-900 shadow-md",
+        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-navy-100 bg-white text-navy-900 shadow-md dark:border-navy-700 dark:bg-navy-900 dark:text-navy-50",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
         className
@@ -103,7 +103,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-navy-50 focus:text-navy-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-navy-50 focus:text-navy-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-navy-800 dark:focus:text-navy-50",
       className
     )}
     {...props}
