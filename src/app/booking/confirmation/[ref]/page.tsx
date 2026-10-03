@@ -16,12 +16,14 @@ import { buildWhatsAppBookingLink } from "@/lib/whatsapp";
 import { ADDONS } from "@/lib/mock-data";
 import { SiteHeader } from "@/components/landing/site-header";
 import { SiteFooter } from "@/components/landing/site-footer";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 export default function ConfirmationPage({
   params,
 }: {
   params: Promise<{ ref: string }>;
 }) {
+  const { t, locale } = useLocale();
   const [reference, setReference] = useState<string>("");
   const [booking, setBooking] = useState<Booking | null>(null);
   const [car, setCar] = useState<Car | null>(null);
@@ -56,8 +58,13 @@ export default function ConfirmationPage({
   }, [reference]);
 
   const addonLabels = Object.fromEntries(
-    ADDONS.map((a) => [a.id, a.name])
+    ADDONS.map((a) => [a.id, locale === "fr" ? a.nameFr : a.name])
   ) as Record<(typeof ADDONS)[number]["id"], string>;
+
+  const locName = (loc: Location | null) => {
+    if (!loc) return "—";
+    return locale === "fr" ? loc.nameFr : loc.name;
+  };
 
   const waLink =
     booking && car && pickup && dropoff
@@ -79,14 +86,14 @@ export default function ConfirmationPage({
       <div className="relative z-10 mx-auto -mt-16 max-w-2xl px-4 pb-20 sm:px-6">
         <div className="rounded-2xl border border-navy-100 bg-white p-6 shadow-xl sm:p-8">
           {loading ? (
-            <p className="py-12 text-center text-navy-500">Loading booking…</p>
+            <p className="py-12 text-center text-navy-500">{t("loadingBooking")}</p>
           ) : !booking || !car ? (
             <div className="py-12 text-center">
-              <p className="text-navy-700">Booking not found.</p>
+              <p className="text-navy-700">{t("bookingNotFound")}</p>
               <Button asChild className="mt-4" variant="outline">
                 <Link href="/">
                   <ArrowLeft className="h-4 w-4" />
-                  Back home
+                  {t("backHome")}
                 </Link>
               </Button>
             </div>
@@ -96,18 +103,15 @@ export default function ConfirmationPage({
                 <CheckCircle2 className="h-8 w-8 shrink-0 text-emerald-500" />
                 <div>
                   <h1 className="font-display text-3xl font-semibold text-navy-900">
-                    Booking received
+                    {t("bookingReceived")}
                   </h1>
-                  <p className="mt-1 text-sm text-navy-500">
-                    Your request is pending confirmation. Send it on WhatsApp
-                    for the fastest response.
-                  </p>
+                  <p className="mt-1 text-sm text-navy-500">{t("bookingPending")}</p>
                 </div>
               </div>
 
               <div className="mb-6 rounded-xl bg-navy-900 px-4 py-4 text-center">
                 <p className="text-xs uppercase tracking-[0.2em] text-gold-400">
-                  Reference
+                  {t("reference")}
                 </p>
                 <p className="mt-1 font-mono text-2xl font-semibold tracking-wider text-white">
                   {booking.reference}
@@ -116,47 +120,93 @@ export default function ConfirmationPage({
 
               <dl className="space-y-3 text-sm">
                 <Row
-                  label="Vehicle"
+                  label={t("vehicle")}
                   value={`${car.make} ${car.model} (${car.year})`}
                 />
                 <Row
-                  label="Pick-up"
-                  value={`${pickup?.name ?? "—"} · ${format(new Date(booking.pickupDatetime), "dd MMM yyyy · HH:mm")}`}
+                  label={t("pickup")}
+                  value={`${locName(pickup)} · ${format(new Date(booking.pickupDatetime), "dd MMM yyyy · HH:mm")}`}
                 />
                 <Row
-                  label="Drop-off"
-                  value={`${dropoff?.name ?? "—"} · ${format(new Date(booking.dropoffDatetime), "dd MMM yyyy · HH:mm")}`}
+                  label={t("dropoff")}
+                  value={`${locName(dropoff)} · ${format(new Date(booking.dropoffDatetime), "dd MMM yyyy · HH:mm")}`}
                 />
                 <Row
-                  label="Add-ons"
+                  label={t("addons")}
                   value={
                     booking.addons.length
                       ? booking.addons
                           .map((id) => addonLabels[id] ?? id)
                           .join(", ")
-                      : "None"
+                      : t("none")
                   }
                 />
-                <Row label="Client" value={booking.client.fullName} />
-                <Row label="Phone" value={booking.client.phone} />
+                <Row label={t("client")} value={booking.client.fullName} />
+                <Row label={t("phone")} value={booking.client.phone} />
                 <Row
-                  label="Total"
+                  label={t("total")}
                   value={formatDualPrice(booking.totalMad)}
                   strong
                 />
               </dl>
+
+              {(booking.client.licensePhotoUrl || booking.client.idPhotoUrl) && (
+                <div className="mt-6">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-navy-500">
+                    {t("documents")}
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {booking.client.licensePhotoUrl && (
+                      <a
+                        href={booking.client.licensePhotoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block overflow-hidden rounded-lg border border-navy-100"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={booking.client.licensePhotoUrl}
+                          alt={t("viewLicense")}
+                          className="h-28 w-full object-cover"
+                        />
+                        <p className="bg-navy-50 px-2 py-1 text-[11px] text-navy-600">
+                          {t("viewLicense")}
+                        </p>
+                      </a>
+                    )}
+                    {booking.client.idPhotoUrl && (
+                      <a
+                        href={booking.client.idPhotoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block overflow-hidden rounded-lg border border-navy-100"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={booking.client.idPhotoUrl}
+                          alt={t("viewId")}
+                          className="h-28 w-full object-cover"
+                        />
+                        <p className="bg-navy-50 px-2 py-1 text-[11px] text-navy-600">
+                          {t("viewId")}
+                        </p>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 {waLink && (
                   <Button variant="whatsapp" size="lg" className="flex-1" asChild>
                     <a href={waLink} target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="h-4 w-4" />
-                      Contact via WhatsApp
+                      {t("contactViaWhatsapp")}
                     </a>
                   </Button>
                 )}
                 <Button variant="outline" size="lg" asChild>
-                  <Link href="/">Back to home</Link>
+                  <Link href="/">{t("backHome")}</Link>
                 </Button>
               </div>
             </>

@@ -10,6 +10,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { useBooking } from "./booking-context";
+import { DocumentPhotoUpload } from "./document-photo-upload";
 import {
   Dialog,
   DialogContent,
@@ -39,11 +40,11 @@ import type { Addon, AddonType, Car, Location } from "@/lib/types";
 import { formatDualPrice } from "@/lib/currency";
 import { calcRentalDays, cn } from "@/lib/utils";
 import { ADDONS } from "@/lib/mock-data";
-
-const STEPS = ["Vehicle & dates", "Locations & add-ons", "Your details"];
+import { useLocale } from "@/components/i18n/locale-provider";
 
 export function BookingModal() {
   const router = useRouter();
+  const { t, locale } = useLocale();
   const {
     isOpen,
     closeBooking,
@@ -61,6 +62,8 @@ export function BookingModal() {
   const [addonsCatalog, setAddonsCatalog] = useState<Addon[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const STEPS = [t("stepVehicle"), t("stepLocations"), t("stepDetails")];
 
   useEffect(() => {
     if (!isOpen) return;
@@ -102,6 +105,9 @@ export function BookingModal() {
     );
   };
 
+  const locationLabel = (loc: Location) =>
+    locale === "fr" ? loc.nameFr : loc.name;
+
   const canGoNext = () => {
     if (state.step === 1) {
       return !!state.car && !!state.search.pickupDate && !!state.search.dropoffDate;
@@ -115,12 +121,19 @@ export function BookingModal() {
       !!c.phone &&
       !!c.email &&
       !!c.licenseNumber &&
-      !!c.idDocument
+      !!c.idDocument &&
+      !!c.licensePhotoUrl &&
+      !!c.idPhotoUrl
     );
   };
 
   const handleSubmit = async () => {
-    if (!state.car || !canGoNext()) return;
+    if (!state.car || !canGoNext()) {
+      if (!state.client.licensePhotoUrl || !state.client.idPhotoUrl) {
+        setError(t("photosRequired"));
+      }
+      return;
+    }
     setSubmitting(true);
     setError(null);
     try {
@@ -138,13 +151,15 @@ export function BookingModal() {
           whatsappPreferred: state.client.whatsappPreferred,
           licenseNumber: state.client.licenseNumber,
           idDocument: state.client.idDocument,
+          licensePhotoUrl: state.client.licensePhotoUrl,
+          idPhotoUrl: state.client.idPhotoUrl,
         },
       });
       setSubmittedBooking(booking);
       closeBooking();
       router.push(`/booking/confirmation/${booking.reference}`);
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError(t("bookingError"));
     } finally {
       setSubmitting(false);
     }
@@ -154,13 +169,10 @@ export function BookingModal() {
     <Dialog open={isOpen} onOpenChange={(o) => !o && closeBooking()}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Book your vehicle</DialogTitle>
-          <DialogDescription>
-            Complete these 3 steps — confirmation takes under a minute.
-          </DialogDescription>
+          <DialogTitle>{t("bookTitle")}</DialogTitle>
+          <DialogDescription>{t("bookDesc")}</DialogDescription>
         </DialogHeader>
 
-        {/* Step indicator */}
         <ol className="mb-2 flex items-center gap-2">
           {STEPS.map((label, i) => {
             const n = (i + 1) as 1 | 2 | 3;
@@ -194,12 +206,11 @@ export function BookingModal() {
           })}
         </ol>
 
-        {/* Step 1 */}
         {state.step === 1 && (
           <div className="space-y-4 animate-slide-in-right">
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label>Pick-up date</Label>
+                <Label>{t("pickupDate")}</Label>
                 <Input
                   type="date"
                   value={state.search.pickupDate}
@@ -207,7 +218,7 @@ export function BookingModal() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Pick-up time</Label>
+                <Label>{t("pickupTime")}</Label>
                 <Input
                   type="time"
                   value={state.search.pickupTime}
@@ -215,7 +226,7 @@ export function BookingModal() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Drop-off date</Label>
+                <Label>{t("dropoffDate")}</Label>
                 <Input
                   type="date"
                   value={state.search.dropoffDate}
@@ -223,7 +234,7 @@ export function BookingModal() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Drop-off time</Label>
+                <Label>{t("dropoffTime")}</Label>
                 <Input
                   type="time"
                   value={state.search.dropoffTime}
@@ -233,7 +244,7 @@ export function BookingModal() {
             </div>
 
             <div className="space-y-1.5">
-              <Label>Select vehicle</Label>
+              <Label>{t("selectVehicle")}</Label>
               <Select
                 value={state.car?.id}
                 onValueChange={(id) => {
@@ -242,12 +253,13 @@ export function BookingModal() {
                 }}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose a car" />
+                  <SelectValue placeholder={t("chooseCar")} />
                 </SelectTrigger>
                 <SelectContent>
                   {cars.map((car) => (
                     <SelectItem key={car.id} value={car.id}>
-                      {car.make} {car.model} — {formatDualPrice(car.dailyRateMad)}/day
+                      {car.make} {car.model} — {formatDualPrice(car.dailyRateMad)}
+                      {t("perDayShort")}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -256,20 +268,19 @@ export function BookingModal() {
 
             {state.car && (
               <p className="rounded-lg bg-navy-50 px-3 py-2 text-sm text-navy-700">
-                {days} day{days > 1 ? "s" : ""} · from{" "}
+                {days} {days > 1 ? t("days") : t("day")} ·{" "}
                 <strong>{formatDualPrice(state.car.dailyRateMad * days)}</strong>{" "}
-                (before delivery & add-ons)
+                {t("beforeAddons")}
               </p>
             )}
           </div>
         )}
 
-        {/* Step 2 */}
         {state.step === 2 && (
           <div className="space-y-4 animate-slide-in-right">
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label>Pick-up point</Label>
+                <Label>{t("pickupPoint")}</Label>
                 <Select
                   value={state.search.pickupLocationId}
                   onValueChange={(v) => setSearch({ pickupLocationId: v })}
@@ -280,7 +291,7 @@ export function BookingModal() {
                   <SelectContent>
                     {locations.map((loc) => (
                       <SelectItem key={loc.id} value={loc.id}>
-                        {loc.name}
+                        {locationLabel(loc)}
                         {loc.deliveryFeeMad > 0
                           ? ` (+${loc.deliveryFeeMad} MAD)`
                           : ""}
@@ -290,7 +301,7 @@ export function BookingModal() {
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <Label>Drop-off point</Label>
+                <Label>{t("dropoffPoint")}</Label>
                 <Select
                   value={state.search.dropoffLocationId}
                   onValueChange={(v) => setSearch({ dropoffLocationId: v })}
@@ -301,7 +312,7 @@ export function BookingModal() {
                   <SelectContent>
                     {locations.map((loc) => (
                       <SelectItem key={loc.id} value={loc.id}>
-                        {loc.name}
+                        {locationLabel(loc)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -310,14 +321,14 @@ export function BookingModal() {
             </div>
 
             <div>
-              <Label className="mb-2 block">Add-ons</Label>
+              <Label className="mb-2 block">{t("addons")}</Label>
               <div className="space-y-2">
                 {(addonsCatalog.length ? addonsCatalog : ADDONS).map((addon) => {
                   const checked = state.addons.includes(addon.id);
                   const price =
                     addon.flatFeeMad && addon.flatFeeMad > 0
-                      ? `${addon.flatFeeMad} MAD flat`
-                      : `${addon.dailyRateMad} MAD/day`;
+                      ? `${addon.flatFeeMad} MAD ${t("flat")}`
+                      : `${addon.dailyRateMad} MAD${t("perDayShort")}`;
                   return (
                     <label
                       key={addon.id}
@@ -336,7 +347,7 @@ export function BookingModal() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-sm font-medium text-navy-900">
-                            {addon.name}
+                            {locale === "fr" ? addon.nameFr : addon.name}
                           </span>
                           <span className="text-xs text-navy-500">{price}</span>
                         </div>
@@ -350,29 +361,28 @@ export function BookingModal() {
 
             {state.car && (
               <p className="rounded-lg bg-navy-900 px-3 py-2.5 text-sm text-white">
-                Estimated total:{" "}
+                {t("estimatedTotal")}{" "}
                 <strong className="text-gold-300">{formatDualPrice(estimate)}</strong>
               </p>
             )}
           </div>
         )}
 
-        {/* Step 3 */}
         {state.step === 3 && (
           <div className="space-y-3 animate-slide-in-right">
             <div className="space-y-1.5">
-              <Label htmlFor="fullName">Full name</Label>
+              <Label htmlFor="fullName">{t("fullName")}</Label>
               <Input
                 id="fullName"
                 value={state.client.fullName}
                 onChange={(e) => setClient({ fullName: e.target.value })}
-                placeholder="As on your license / passport"
+                placeholder={t("fullNamePlaceholder")}
                 required
               />
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="phone">Phone number</Label>
+                <Label htmlFor="phone">{t("phone")}</Label>
                 <Input
                   id="phone"
                   type="tel"
@@ -383,7 +393,7 @@ export function BookingModal() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t("email")}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -396,7 +406,7 @@ export function BookingModal() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label htmlFor="license">Driving license number</Label>
+                <Label htmlFor="license">{t("licenseNumber")}</Label>
                 <Input
                   id="license"
                   value={state.client.licenseNumber}
@@ -405,7 +415,7 @@ export function BookingModal() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="idDoc">Passport / CIN</Label>
+                <Label htmlFor="idDoc">{t("idDocument")}</Label>
                 <Input
                   id="idDoc"
                   value={state.client.idDocument}
@@ -414,6 +424,20 @@ export function BookingModal() {
                 />
               </div>
             </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <DocumentPhotoUpload
+                label={t("licensePhoto")}
+                value={state.client.licensePhotoUrl}
+                onChange={(url) => setClient({ licensePhotoUrl: url })}
+              />
+              <DocumentPhotoUpload
+                label={t("idPhoto")}
+                value={state.client.idPhotoUrl}
+                onChange={(url) => setClient({ idPhotoUrl: url })}
+              />
+            </div>
+
             <label className="flex items-center gap-2 rounded-lg border border-navy-100 p-3">
               <Checkbox
                 checked={state.client.whatsappPreferred}
@@ -423,7 +447,7 @@ export function BookingModal() {
               />
               <span className="flex items-center gap-1.5 text-sm text-navy-700">
                 <MessageCircle className="h-4 w-4 text-[#25D366]" />
-                Prefer WhatsApp for booking updates
+                {t("preferWhatsapp")}
               </span>
             </label>
 
@@ -433,10 +457,10 @@ export function BookingModal() {
                   <strong>
                     {state.car.make} {state.car.model}
                   </strong>{" "}
-                  · {days} day{days > 1 ? "s" : ""}
+                  · {days} {days > 1 ? t("days") : t("day")}
                 </p>
                 <p className="mt-1 text-base font-semibold text-navy-900">
-                  Total: {formatDualPrice(estimate)}
+                  {t("total")} {formatDualPrice(estimate)}
                 </p>
               </div>
             )}
@@ -452,7 +476,7 @@ export function BookingModal() {
             onClick={() => setStep((state.step - 1) as 1 | 2 | 3)}
           >
             <ChevronLeft className="h-4 w-4" />
-            Back
+            {t("back")}
           </Button>
 
           {state.step < 3 ? (
@@ -462,7 +486,7 @@ export function BookingModal() {
               disabled={!canGoNext()}
               onClick={() => setStep((state.step + 1) as 1 | 2 | 3)}
             >
-              Continue
+              {t("continue")}
               <ChevronRight className="h-4 w-4" />
             </Button>
           ) : (
@@ -475,10 +499,10 @@ export function BookingModal() {
               {submitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Submitting…
+                  {t("submitting")}
                 </>
               ) : (
-                "Confirm booking"
+                t("confirmBooking")
               )}
             </Button>
           )}

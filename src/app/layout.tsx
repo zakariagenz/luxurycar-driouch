@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { BookingProvider } from "@/components/booking/booking-context";
 import { BookingModal } from "@/components/booking/booking-modal";
+import { LocaleProvider } from "@/components/i18n/locale-provider";
 
 export const metadata: Metadata = {
   title: "LuxuryCar Driouch | Premium Car Rental Morocco",
@@ -23,10 +24,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen font-sans">
-        <BookingProvider>
-          {children}
-          <BookingModal />
-        </BookingProvider>
+        <LocaleProvider>
+          <BookingProvider>
+            {children}
+            <BookingModal />
+          </BookingProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

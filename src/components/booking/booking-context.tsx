@@ -58,6 +58,8 @@ function defaultClient(): ClientDetails {
     whatsappPreferred: true,
     licenseNumber: "",
     idDocument: "",
+    licensePhotoUrl: undefined,
+    idPhotoUrl: undefined,
   };
 }
 

@@ -5,21 +5,23 @@ import { CarCard } from "./car-card";
 import { carService } from "@/lib/booking-service";
 import type { Car, CarCategory, FuelType, Transmission } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-const CATEGORIES: { value: CarCategory | "all"; label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "economy", label: "Economy" },
-  { value: "suv", label: "SUV" },
-  { value: "luxury", label: "Luxury" },
-  { value: "van", label: "Van" },
-];
+import { useLocale } from "@/components/i18n/locale-provider";
 
 export function FleetCatalog() {
+  const { t } = useLocale();
   const [cars, setCars] = useState<Car[]>([]);
   const [category, setCategory] = useState<CarCategory | "all">("all");
   const [transmission, setTransmission] = useState<Transmission | "all">("all");
   const [fuelType, setFuelType] = useState<FuelType | "all">("all");
   const [loading, setLoading] = useState(true);
+
+  const CATEGORIES: { value: CarCategory | "all"; label: string }[] = [
+    { value: "all", label: t("all") },
+    { value: "economy", label: t("economy") },
+    { value: "suv", label: t("suv") },
+    { value: "luxury", label: t("luxury") },
+    { value: "van", label: t("van") },
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -39,18 +41,16 @@ export function FleetCatalog() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-600">
-            Our Fleet
+            {t("ourFleet")}
           </p>
           <h2 className="mt-2 font-display text-4xl font-semibold text-navy-900 sm:text-5xl">
-            Choose your drive
+            {t("chooseDrive")}
           </h2>
           <p className="mt-3 text-navy-600">
-            From efficient city cars to luxury SUVs — {availableCount} vehicles
-            ready for pick-up across Morocco.
+            {t("fleetIntro", { count: availableCount })}
           </p>
         </div>
 
-        {/* Filters */}
         <div className="mb-10 flex flex-col gap-4 border-y border-navy-100 py-4">
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((c) => (
@@ -72,9 +72,9 @@ export function FleetCatalog() {
           <div className="flex flex-wrap gap-2">
             {(
               [
-                ["all", "Any gearbox"],
-                ["automatic", "Automatic"],
-                ["manual", "Manual"],
+                ["all", t("anyGearbox")],
+                ["automatic", t("automatic")],
+                ["manual", t("manual")],
               ] as const
             ).map(([value, label]) => (
               <button
@@ -84,7 +84,7 @@ export function FleetCatalog() {
                 className={cn(
                   "border px-3 py-1.5 text-xs font-medium transition",
                   transmission === value
-                    ? "border-gold-500 text-gold-700 bg-gold-50"
+                    ? "border-gold-500 bg-gold-50 text-gold-700"
                     : "border-navy-200 text-navy-600 hover:border-navy-300"
                 )}
               >
@@ -93,10 +93,10 @@ export function FleetCatalog() {
             ))}
             {(
               [
-                ["all", "Any fuel"],
-                ["diesel", "Diesel"],
-                ["essence", "Essence"],
-                ["hybrid", "Hybrid"],
+                ["all", t("anyFuel")],
+                ["diesel", t("diesel")],
+                ["essence", t("essence")],
+                ["hybrid", t("hybrid")],
               ] as const
             ).map(([value, label]) => (
               <button
@@ -106,7 +106,7 @@ export function FleetCatalog() {
                 className={cn(
                   "border px-3 py-1.5 text-xs font-medium transition",
                   fuelType === value
-                    ? "border-terracotta-400 text-terracotta-700 bg-terracotta-50"
+                    ? "border-terracotta-400 bg-terracotta-50 text-terracotta-700"
                     : "border-navy-200 text-navy-600 hover:border-navy-300"
                 )}
               >
@@ -119,16 +119,11 @@ export function FleetCatalog() {
         {loading ? (
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="aspect-[16/10] animate-pulse bg-navy-100"
-              />
+              <div key={i} className="aspect-[16/10] animate-pulse bg-navy-100" />
             ))}
           </div>
         ) : cars.length === 0 ? (
-          <p className="py-16 text-center text-navy-500">
-            No vehicles match these filters. Try adjusting your selection.
-          </p>
+          <p className="py-16 text-center text-navy-500">{t("noVehicles")}</p>
         ) : (
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {cars.map((car, i) => (

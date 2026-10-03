@@ -15,9 +15,11 @@ import {
 import { locationService } from "@/lib/booking-service";
 import type { Location } from "@/lib/types";
 import { useBooking } from "@/components/booking/booking-context";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 export function SearchWidget({ compact = false }: { compact?: boolean }) {
   const { openBooking, setSearch, state } = useBooking();
+  const { t, locale } = useLocale();
   const [locations, setLocations] = useState<Location[]>([]);
   const [form, setForm] = useState(state.search);
 
@@ -32,6 +34,8 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
     document.getElementById("fleet")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const label = (loc: Location) => (locale === "fr" ? loc.nameFr : loc.name);
+
   return (
     <form
       onSubmit={onSubmit}
@@ -42,7 +46,7 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
       }
     >
       <div className="space-y-1.5">
-        <Label className="text-navy-600">Pick-up location</Label>
+        <Label className="text-navy-600">{t("pickupLocation")}</Label>
         <Select
           value={form.pickupLocationId}
           onValueChange={(v) =>
@@ -54,14 +58,14 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
           }
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select location" />
+            <SelectValue placeholder={t("selectLocation")} />
           </SelectTrigger>
           <SelectContent>
             {locations.map((loc) => (
               <SelectItem key={loc.id} value={loc.id}>
                 <span className="inline-flex items-center gap-1.5">
                   <MapPin className="h-3.5 w-3.5 text-gold-600" />
-                  {loc.name}
+                  {label(loc)}
                 </span>
               </SelectItem>
             ))}
@@ -70,18 +74,18 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-navy-600">Drop-off location</Label>
+        <Label className="text-navy-600">{t("dropoffLocation")}</Label>
         <Select
           value={form.dropoffLocationId}
           onValueChange={(v) => setForm((f) => ({ ...f, dropoffLocationId: v }))}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select location" />
+            <SelectValue placeholder={t("selectLocation")} />
           </SelectTrigger>
           <SelectContent>
             {locations.map((loc) => (
               <SelectItem key={loc.id} value={loc.id}>
-                {loc.name}
+                {label(loc)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -89,7 +93,7 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-navy-600">Pick-up</Label>
+        <Label className="text-navy-600">{t("pickup")}</Label>
         <div className="flex gap-2">
           <Input
             type="date"
@@ -112,7 +116,7 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="space-y-1.5">
-        <Label className="text-navy-600">Drop-off</Label>
+        <Label className="text-navy-600">{t("dropoff")}</Label>
         <div className="flex gap-2">
           <Input
             type="date"
@@ -137,7 +141,7 @@ export function SearchWidget({ compact = false }: { compact?: boolean }) {
       <div className="flex items-end">
         <Button type="submit" variant="gold" size="lg" className="w-full lg:w-auto">
           <Search className="h-4 w-4" />
-          Search
+          {t("search")}
         </Button>
       </div>
     </form>

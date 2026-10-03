@@ -1,47 +1,55 @@
 "use client";
 
 import Image from "next/image";
-import {
-  Fuel,
-  Gauge,
-  Users,
-  Briefcase,
-  Zap,
-} from "lucide-react";
+import { Fuel, Gauge, Users, Briefcase, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDualPrice } from "@/lib/currency";
 import type { Car } from "@/lib/types";
 import { useBooking } from "@/components/booking/booking-context";
+import { useLocale } from "@/components/i18n/locale-provider";
 import { cn } from "@/lib/utils";
-
-const categoryLabel: Record<Car["category"], string> = {
-  economy: "Economy",
-  suv: "SUV",
-  luxury: "Luxury",
-  van: "Van",
-};
 
 export function CarCard({ car, index = 0 }: { car: Car; index?: number }) {
   const { openBooking } = useBooking();
+  const { t } = useLocale();
   const available = car.status === "available";
+
+  const categoryLabel: Record<Car["category"], string> = {
+    economy: t("economy"),
+    suv: t("suv"),
+    luxury: t("luxury"),
+    van: t("van"),
+  };
 
   return (
     <article
       className={cn(
-        "group relative flex flex-col overflow-hidden border-b border-navy-100 pb-8 opacity-0 animate-fade-in-up",
-        `[animation-delay:${Math.min(index * 80, 400)}ms]`
+        "group relative flex flex-col overflow-hidden border-b border-navy-100 pb-8 opacity-0 animate-fade-in-up"
       )}
       style={{ animationDelay: `${Math.min(index * 80, 400)}ms` }}
     >
       <div className="relative mb-4 aspect-[16/10] overflow-hidden bg-navy-100">
-        <Image
-          src={car.imageUrl}
-          alt={`${car.make} ${car.model}`}
-          fill
-          className="object-cover transition duration-700 group-hover:scale-105"
-          sizes="(max-width: 768px) 100vw, 33vw"
-        />
+        {car.imageUrl?.startsWith("data:") ? (
+          // Uploaded fleet photos are stored as compressed data URLs
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={car.imageUrl}
+            alt={`${car.make} ${car.model}`}
+            className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+          />
+        ) : (
+          <Image
+            src={
+              car.imageUrl ||
+              "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800&q=80"
+            }
+            alt={`${car.make} ${car.model}`}
+            fill
+            className="object-cover transition duration-700 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
+        )}
         <div className="absolute left-3 top-3 flex gap-2">
           <Badge className="bg-navy-950/80 text-white backdrop-blur">
             {categoryLabel[car.category]}
@@ -60,13 +68,15 @@ export function CarCard({ car, index = 0 }: { car: Car; index?: number }) {
             <h3 className="font-display text-2xl font-semibold text-navy-900">
               {car.make} {car.model}
             </h3>
-            <p className="text-sm text-navy-500">{car.year} · {car.transmission} · {car.fuelType}</p>
+            <p className="text-sm capitalize text-navy-500">
+              {car.year} · {car.transmission} · {car.fuelType}
+            </p>
           </div>
           <div className="text-right">
             <p className="font-semibold text-navy-900">
               {formatDualPrice(car.dailyRateMad)}
             </p>
-            <p className="text-xs text-navy-400">per day</p>
+            <p className="text-xs text-navy-400">{t("perDay")}</p>
           </div>
         </div>
 
@@ -74,10 +84,12 @@ export function CarCard({ car, index = 0 }: { car: Car; index?: number }) {
 
         <div className="mt-4 flex flex-wrap gap-3 text-xs text-navy-600">
           <span className="inline-flex items-center gap-1">
-            <Users className="h-3.5 w-3.5 text-gold-600" /> {car.seats} seats
+            <Users className="h-3.5 w-3.5 text-gold-600" /> {car.seats}{" "}
+            {t("seats")}
           </span>
           <span className="inline-flex items-center gap-1">
-            <Briefcase className="h-3.5 w-3.5 text-gold-600" /> {car.bags} bags
+            <Briefcase className="h-3.5 w-3.5 text-gold-600" /> {car.bags}{" "}
+            {t("bags")}
           </span>
           <span className="inline-flex items-center gap-1 capitalize">
             <Fuel className="h-3.5 w-3.5 text-gold-600" /> {car.fuelType}
@@ -106,7 +118,7 @@ export function CarCard({ car, index = 0 }: { car: Car; index?: number }) {
             onClick={() => openBooking(car)}
           >
             <Zap className="h-4 w-4" />
-            {available ? "Instant Book" : "Unavailable"}
+            {available ? t("instantBook") : t("unavailable")}
           </Button>
         </div>
       </div>

@@ -267,6 +267,29 @@ export const bookingService = {
     return getBookings().find((b) => b.id === id);
   },
 
+  async saveContract(
+    id: string,
+    contractText: string,
+    contractData?: import("./contract").ContractFormData
+  ): Promise<Booking | undefined> {
+    await delay();
+    const now = new Date().toISOString();
+    setBookings(
+      getBookings().map((b) =>
+        b.id === id
+          ? {
+              ...b,
+              contractText,
+              contractData,
+              contractUpdatedAt: now,
+              updatedAt: now,
+            }
+          : b
+      )
+    );
+    return getBookings().find((b) => b.id === id);
+  },
+
   async getMetrics(): Promise<DashboardMetrics> {
     await delay(50);
     return getDashboardMetrics(getBookings());

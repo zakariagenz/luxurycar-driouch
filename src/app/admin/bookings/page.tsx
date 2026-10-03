@@ -8,8 +8,10 @@ import {
   locationService,
 } from "@/lib/booking-service";
 import type { Booking, Car, Location } from "@/lib/types";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 export default function AdminBookingsPage() {
+  const { t } = useLocale();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
@@ -33,11 +35,9 @@ export default function AdminBookingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-3xl font-semibold text-navy-900">
-          Bookings
+          {t("adminBookings")}
         </h1>
-        <p className="mt-1 text-sm text-navy-500">
-          Approve requests, adjust schedules, and send WhatsApp reminders.
-        </p>
+        <p className="mt-1 text-sm text-navy-500">{t("adminBookingsSub")}</p>
       </div>
       <BookingTable
         bookings={bookings}

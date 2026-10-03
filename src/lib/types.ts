@@ -72,8 +72,12 @@ export interface ClientDetails {
   email: string;
   whatsappPreferred: boolean;
   licenseNumber: string;
-  /** Passport or Moroccan CIN */
+  /** Passport or Moroccan CIN number */
   idDocument: string;
+  /** Compressed JPEG data URL of driving license */
+  licensePhotoUrl?: string;
+  /** Compressed JPEG data URL of CIN / passport */
+  idPhotoUrl?: string;
 }
 
 export interface BookingSearch {
@@ -98,6 +102,11 @@ export interface Booking {
   client: ClientDetails;
   totalMad: number;
   notes?: string;
+  /** Human-readable contract summary */
+  contractText?: string;
+  /** Structured editable contract fields */
+  contractData?: import("./contract").ContractFormData;
+  contractUpdatedAt?: string;
   createdAt: string;
   updatedAt: string;
 }

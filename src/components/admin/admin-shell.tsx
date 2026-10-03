@@ -13,17 +13,40 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-
-const NAV = [
-  { href: "/admin", label: "Overview", icon: LayoutDashboard },
-  { href: "/admin/calendar", label: "Calendar", icon: CalendarDays },
-  { href: "/admin/bookings", label: "Bookings", icon: ClipboardList },
-  { href: "/admin/fleet", label: "Fleet", icon: Car },
-];
+import { useLocale } from "@/components/i18n/locale-provider";
+import type { AppLocale } from "@/lib/i18n/dictionaries";
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { t, locale, setLocale } = useLocale();
+
+  const NAV = [
+    { href: "/admin", label: t("adminOverview"), icon: LayoutDashboard },
+    { href: "/admin/calendar", label: t("adminCalendar"), icon: CalendarDays },
+    { href: "/admin/bookings", label: t("adminBookings"), icon: ClipboardList },
+    { href: "/admin/fleet", label: t("adminFleet"), icon: Car },
+  ];
+
+  const LangSwitch = () => (
+    <div className="inline-flex overflow-hidden rounded-md border border-white/20 text-xs font-semibold">
+      {(["en", "fr"] as AppLocale[]).map((code) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => setLocale(code)}
+          className={cn(
+            "px-2 py-1 uppercase",
+            locale === code
+              ? "bg-gold-500 text-navy-950"
+              : "text-white/70 hover:bg-white/10"
+          )}
+        >
+          {code}
+        </button>
+      ))}
+    </div>
+  );
 
   const NavLinks = ({ onNavigate }: { onNavigate?: () => void }) => (
     <nav className="space-y-1">
@@ -54,13 +77,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-navy-50/50">
-      {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col bg-navy-950 text-white lg:flex">
         <div className="border-b border-white/10 px-5 py-5">
           <p className="font-display text-xl font-semibold">
             LuxuryCar <span className="text-gold-400">Admin</span>
           </p>
-          <p className="mt-0.5 text-xs text-white/50">Staff dashboard</p>
+          <p className="mt-0.5 text-xs text-white/50">{t("staffDash")}</p>
+          <div className="mt-3">
+            <LangSwitch />
+          </div>
         </div>
         <div className="flex-1 px-3 py-4">
           <NavLinks />
@@ -71,31 +96,35 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             className="flex items-center gap-2 text-sm text-white/60 hover:text-white"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to website
+            {t("backToWebsite")}
           </Link>
         </div>
       </aside>
 
-      {/* Mobile top bar */}
       <div className="sticky top-0 z-20 flex items-center justify-between border-b border-navy-100 bg-white px-4 py-3 lg:hidden">
-        <p className="font-display text-lg font-semibold text-navy-900">
-          Admin
-        </p>
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="rounded-md p-2 text-navy-700"
-          aria-label="Menu"
-        >
-          {open ? <X /> : <Menu />}
-        </button>
+        <p className="font-display text-lg font-semibold text-navy-900">Admin</p>
+        <div className="flex items-center gap-2">
+          <LangSwitch />
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="rounded-md p-2 text-navy-700"
+            aria-label={t("menu")}
+          >
+            {open ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
 
       {open && (
         <div className="fixed inset-0 z-40 bg-navy-950/95 p-4 lg:hidden">
           <div className="mb-6 flex justify-between">
-            <p className="font-display text-xl text-white">Menu</p>
-            <button type="button" onClick={() => setOpen(false)} className="text-white">
+            <p className="font-display text-xl text-white">{t("menu")}</p>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="text-white"
+            >
               <X />
             </button>
           </div>
@@ -106,7 +135,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             onClick={() => setOpen(false)}
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to website
+            {t("backToWebsite")}
           </Link>
         </div>
       )}

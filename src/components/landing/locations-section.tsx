@@ -1,31 +1,36 @@
+"use client";
+
 import { Plane, Building2, Hotel } from "lucide-react";
 import { LOCATIONS } from "@/lib/mock-data";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 export function LocationsSection() {
+  const { t, locale } = useLocale();
   const airports = LOCATIONS.filter((l) => l.type === "airport");
   const others = LOCATIONS.filter((l) => l.type !== "airport");
+  const name = (id: string) => {
+    const loc = LOCATIONS.find((l) => l.id === id)!;
+    return locale === "fr" ? loc.nameFr : loc.name;
+  };
 
   return (
     <section id="locations" className="scroll-mt-20 py-20 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-10 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-600">
-            Morocco coverage
+            {t("moroccoCoverage")}
           </p>
           <h2 className="mt-2 font-display text-4xl font-semibold text-navy-900">
-            Pick-up anywhere that matters
+            {t("pickupAnywhere")}
           </h2>
-          <p className="mt-3 text-navy-600">
-            Major airports, our Driouch agency, city centers, and hotel delivery
-            nationwide.
-          </p>
+          <p className="mt-3 text-navy-600">{t("locationsIntro")}</p>
         </div>
 
         <div className="grid gap-10 lg:grid-cols-2">
           <div>
             <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-navy-500">
               <Plane className="h-4 w-4 text-gold-600" />
-              Airports
+              {t("airports")}
             </h3>
             <ul className="divide-y divide-navy-100 border-y border-navy-100">
               {airports.map((loc) => (
@@ -34,12 +39,12 @@ export function LocationsSection() {
                   className="flex items-center justify-between py-3.5"
                 >
                   <div>
-                    <p className="font-medium text-navy-900">{loc.name}</p>
+                    <p className="font-medium text-navy-900">{name(loc.id)}</p>
                     <p className="text-xs text-navy-500">{loc.city}</p>
                   </div>
                   <span className="text-xs text-navy-500">
                     {loc.deliveryFeeMad === 0
-                      ? "Included"
+                      ? t("included")
                       : `+${loc.deliveryFeeMad} MAD`}
                   </span>
                 </li>
@@ -50,7 +55,7 @@ export function LocationsSection() {
           <div>
             <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-navy-500">
               <Building2 className="h-4 w-4 text-gold-600" />
-              Agency & delivery
+              {t("agencyDelivery")}
             </h3>
             <ul className="divide-y divide-navy-100 border-y border-navy-100">
               {others.map((loc) => (
@@ -63,13 +68,13 @@ export function LocationsSection() {
                       <Hotel className="mt-0.5 h-4 w-4 text-terracotta-500" />
                     ) : null}
                     <div>
-                      <p className="font-medium text-navy-900">{loc.name}</p>
+                      <p className="font-medium text-navy-900">{name(loc.id)}</p>
                       <p className="text-xs text-navy-500">{loc.city}</p>
                     </div>
                   </div>
                   <span className="text-xs text-navy-500">
                     {loc.deliveryFeeMad === 0
-                      ? "Free"
+                      ? t("free")
                       : `+${loc.deliveryFeeMad} MAD`}
                   </span>
                 </li>

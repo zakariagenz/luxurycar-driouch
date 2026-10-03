@@ -13,8 +13,10 @@ import {
 import type { Booking, Car, DashboardMetrics, Location } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import { useLocale } from "@/components/i18n/locale-provider";
 
 export default function AdminOverviewPage() {
+  const { t } = useLocale();
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [cars, setCars] = useState<Car[]>([]);
@@ -56,11 +58,9 @@ export default function AdminOverviewPage() {
     <div className="space-y-8">
       <div>
         <h1 className="font-display text-3xl font-semibold text-navy-900">
-          Overview
+          {t("adminOverview")}
         </h1>
-        <p className="mt-1 text-sm text-navy-500">
-          Today&apos;s operations at a glance — Driouch fleet desk.
-        </p>
+        <p className="mt-1 text-sm text-navy-500">{t("adminOverviewSub")}</p>
       </div>
 
       {metrics && <MetricsWidget metrics={metrics} />}
@@ -69,20 +69,23 @@ export default function AdminOverviewPage() {
         <div className="space-y-4 lg:col-span-2">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-xl font-semibold text-navy-900">
-              Pending requests
+              {t("pendingRequests")}
             </h2>
             <Button variant="outline" size="sm" asChild>
-              <Link href="/admin/bookings">View all</Link>
+              <Link href="/admin/bookings">{t("viewAll")}</Link>
             </Button>
           </div>
           <div className="divide-y divide-navy-100 border border-navy-100 bg-white">
             {pending.length === 0 && (
               <p className="px-4 py-8 text-center text-sm text-navy-500">
-                No pending requests.
+                {t("noPending")}
               </p>
             )}
             {pending.map((b) => (
-              <div key={b.id} className="flex items-start justify-between gap-3 px-4 py-3">
+              <div
+                key={b.id}
+                className="flex items-start justify-between gap-3 px-4 py-3"
+              >
                 <div>
                   <p className="font-medium text-navy-900">{b.client.fullName}</p>
                   <p className="text-xs text-navy-500">
@@ -100,12 +103,12 @@ export default function AdminOverviewPage() {
 
           <div>
             <h2 className="mb-3 font-display text-xl font-semibold text-navy-900">
-              Today&apos;s pick-ups
+              {t("todayPickups")}
             </h2>
             <div className="divide-y divide-navy-100 border border-navy-100 bg-white">
               {todayPickups.length === 0 && (
                 <p className="px-4 py-8 text-center text-sm text-navy-500">
-                  No pick-ups scheduled today.
+                  {t("noPickups")}
                 </p>
               )}
               {todayPickups.map((b) => (

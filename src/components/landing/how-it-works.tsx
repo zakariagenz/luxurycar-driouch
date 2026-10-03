@@ -1,34 +1,23 @@
+"use client";
+
 import {
   CalendarCheck,
   MapPinned,
   ShieldCheck,
   Smartphone,
 } from "lucide-react";
-
-const STEPS = [
-  {
-    icon: Smartphone,
-    title: "Search & select",
-    text: "Pick dates, location, and the car that fits your trip.",
-  },
-  {
-    icon: MapPinned,
-    title: "Airport or hotel delivery",
-    text: "CMN, RAK, TNG, AGA, NDG, FEZ — or meet us at your hotel.",
-  },
-  {
-    icon: CalendarCheck,
-    title: "Confirm on WhatsApp",
-    text: "Get your reference and chat directly with our team.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Drive with confidence",
-    text: "Full coverage options, bilingual support, transparent MAD pricing.",
-  },
-];
+import { useLocale } from "@/components/i18n/locale-provider";
 
 export function HowItWorks() {
+  const { t } = useLocale();
+
+  const STEPS = [
+    { icon: Smartphone, title: t("step1Title"), text: t("step1Text") },
+    { icon: MapPinned, title: t("step2Title"), text: t("step2Text") },
+    { icon: CalendarCheck, title: t("step3Title"), text: t("step3Text") },
+    { icon: ShieldCheck, title: t("step4Title"), text: t("step4Text") },
+  ];
+
   return (
     <section
       id="how-it-works"
@@ -37,10 +26,10 @@ export function HowItWorks() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold-600">
-            Simple process
+            {t("simpleProcess")}
           </p>
           <h2 className="mt-2 font-display text-4xl font-semibold text-navy-900">
-            Book in minutes
+            {t("bookInMinutes")}
           </h2>
         </div>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
